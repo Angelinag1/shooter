@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shooter</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        .game {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background-image: url(./fond.jpg);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .player {
+            position: absolute;
+            background-image: url(./vaisseau.png);
+            background-size: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .ennemy {
+            position : absolute ;
+            background-image: url(./asteroid.png);
+            background-size: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .bullet {
+            position : absolute;
+            background-image: url(./bullet.png);
+            background-size: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+    // POUR LUNDI 18 . LA VIE LE SCORE LA VITESSE QUI AUGMENTE AU FUR ET A MESURE ( des ennemies)
+    <div id="game" class="game">
+        <div id="player" class="player"></div>
+    </div>
+    <script>
+        // Init Variable
+        let press = null;
+        let code = null;
+        const ennemies = []
+        const bullets = []
+        const playerWidth = 70;
+        const playerHeight = 70;
+        const ennemyWidth = 40;
+        const ennemyHeight = 40;
+        const bulletWidth = 20;
+        const bulletHeight = 20;
+
+
+        let playerLeft = (window.innerWidth - playerWidth)/2;
+        let playerTop = (window.innerHeight - playerHeight) ;
+
+        // Dom instances
+        const game = document.getElementById('game');
+        const player = document.getElementById('player');
+
+        // Size of player  
+        player.style.width = playerWidth + 'px';
+        player.style.height = playerHeight + 'px';
+        
+
+
+        // Quand une touche est appuyer
+        window.addEventListener('keydown', function (event){
+            code =event.keyCode;
+            console.log (code);
+            press = true;
+            
+            if (code == 32) {
+                const bullet = document.createElement('div') 
+                bullet.style.width = bulletWidth + 'px'
+                bullet.style.height = bulletHeight + 'px'
+                bullet.style.left = parseInt(player.style.left)+ ((playerWidth - bulletWidth)/2) +'px';
+                bullet.style.top = player.style.top;
+                bullet.className = 'bullet'
+                game.appendChild(bullet);
+                bullets.push(bullet);
+            };
+            
+        });
+
+        function generate (){
+            const ennemy = document.createElement('div');
+            ennemy.style.width = ennemyWidth + 'px';
+            ennemy.style.height = ennemyHeight + 'px'
+            ennemy.style.left = Math.round(Math.random()*(window.innerWidth - ennemyWidth)) + 'px';
+            ennemy.style.top = 0 +'px';
+            ennemy.className = 'ennemy';
+            game.appendChild(ennemy);
+            ennemies.push(ennemy)
+
+            setTimeout(generate,Math.round(Math.random()*5000));
+        };
+        generate();
+        function draw () {
+            
+
+            //position vessel 
+            //Right
+            if(press && code ==39 && playerLeft < window.innerWidth - playerWidth) {
+                playerLeft = playerLeft+5;
+            }
+            //left
+            if(press && code ==37 && playerLeft >= 0) {
+                playerLeft = playerLeft-5;
+            }
+            //top
+            if(press && code ==38 && playerTop >= 0) {
+                playerTop = playerTop -5;
+            }
+            //bottom
+            if(press && code ==40 && playerTop < window.innerHeight - playerHeight) {
+                playerTop = playerTop  + 5;
+            }
+            player.style.left = playerLeft + 'px';
+            player.style.top = playerTop +'px';
+
+            for(let i = 0; i<ennemies.length; i++) {
+                const ennemy = ennemies[i];
+                for(let j = 0; j < bullets.length; j++) {
+                    const bullet = bullets[j];
+                    if(
+                        bullet.offsetLeft+(bullet.clientWidth/2) > ennemy.offsetLeft
+                        && bullet.offsetLeft+(bullet.clientWidth/2) < ennemy.offsetLeft + ennemy.clientWidth
+                        && bullet.offsetTop+(bullet.clientWidth/2) >ennemy.offsetTop
+                        && bullet.offsetTop+(bullet.clientWidth/2) < ennemy.offsetTop + ennemy.clientWidth
+                    ) {
+                        game.removeChild(ennemy);
+                        ennemies.splice(i, 1);
+                        game.removeChild(bullet);
+                        bullets.splice(j, 1);
+                    }
+                }
+            }
+
+            //Draw ennemies
+            for (let index = 0 ; index < ennemies.length; index++) {
+                const ennemy = ennemies[index];
+                ennemy.style.top = (parseInt(ennemy.style.top)+2)+'px';
+                if (parseInt(ennemy.style.top) > window.innerHeight - ennemyHeight){
+                    game.removeChild(ennemy);
+                    ennemies.splice(index, 1)
+                };
+            };
+
+            //Draw bullets 
+            for (let index = 0 ; index < bullets.length; index++) {
+                const bullet = bullets[index];
+                bullet.style.top = (parseInt(bullet.style.top)- 5)+'px';
+                if (parseInt(bullet.style.top) <0 ){
+                    game.removeChild(bullet);
+                    bullets.splice(index, 1)
+                };
+            };
+            requestAnimationFrame(draw)
+
+        };
+        
+        // Quand une touche est relacher 
+        window.addEventListener('keyup', function(event){
+            press = false
+        });
+        draw ()
+        
+
+    </script>
+</body>
+</html>
