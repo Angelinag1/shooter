@@ -42,9 +42,10 @@
     </style>
 </head>
 <body>
-    // POUR LUNDI 18 . LA VIE LE SCORE LA VITESSE QUI AUGMENTE AU FUR ET A MESURE ( des ennemies)
     <div id="game" class="game">
         <div id="player" class="player"></div>
+        <div id="score" class="score"></div>
+        <div id="heart" class="heart"></div>
     </div>
     <script>
         // Init Variable
@@ -58,6 +59,8 @@
         const ennemyHeight = 40;
         const bulletWidth = 20;
         const bulletHeight = 20;
+        var scores = 0;
+        var vies = 5;
 
 
         let playerLeft = (window.innerWidth - playerWidth)/2;
@@ -66,12 +69,13 @@
         // Dom instances
         const game = document.getElementById('game');
         const player = document.getElementById('player');
+        const score = document.getElementById('score')
+        const heart = document.getElementById('heart')
 
         // Size of player  
         player.style.width = playerWidth + 'px';
         player.style.height = playerHeight + 'px';
         
-
 
         // Quand une touche est appuyer
         window.addEventListener('keydown', function (event){
@@ -104,9 +108,14 @@
 
             setTimeout(generate,Math.round(Math.random()*5000));
         };
+        
         generate();
         function draw () {
-            
+            score.innerText = 'Score: '+scores;
+            score.style.color = "white";
+
+            heart.innerText = 'Vies: '+vies;
+            heart.style.color = "white";
 
             //position vessel 
             //Right
@@ -138,13 +147,17 @@
                         && bullet.offsetTop+(bullet.clientWidth/2) >ennemy.offsetTop
                         && bullet.offsetTop+(bullet.clientWidth/2) < ennemy.offsetTop + ennemy.clientWidth
                     ) {
+
                         game.removeChild(ennemy);
                         ennemies.splice(i, 1);
                         game.removeChild(bullet);
+                        scores = scores +1
                         bullets.splice(j, 1);
                     }
                 }
             }
+
+            
 
             //Draw ennemies
             for (let index = 0 ; index < ennemies.length; index++) {
