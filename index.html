@@ -156,6 +156,24 @@
                     }
                 }
             }
+            for(let i = 0; i<ennemies.length; i++) {
+                const ennemy = ennemies[i];
+                
+                    if(
+                        player.offsetLeft+(player.clientWidth/2) > ennemy.offsetLeft
+                        && player.offsetLeft+(player.clientWidth/2) < ennemy.offsetLeft + ennemy.clientWidth
+                        && player.offsetTop+(player.clientWidth/2) >ennemy.offsetTop
+                        && player.offsetTop+(player.clientWidth/2) < ennemy.offsetTop + ennemy.clientWidth
+                    ) {
+                        vies = vies - 1
+                        game.removeChild(ennemy);
+                        ennemies.splice(i, 1);
+                        if (vies == 0) {
+                            game.removeChild(ennemy);
+                            game.remoceChild(player);
+                        }
+                    }                
+            }
 
             
 
