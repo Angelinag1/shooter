@@ -61,6 +61,7 @@
         const bulletHeight = 20;
         var scores = 0;
         var vies = 5;
+        var vitesseEnnemy = 2 ;
 
 
         let playerLeft = (window.innerWidth - playerWidth)/2;
@@ -153,6 +154,9 @@
                         game.removeChild(bullet);
                         scores = scores +1
                         bullets.splice(j, 1);
+                        if (scores %10 == 0){
+                            vitesseEnnemy = vitesseEnnemy +1; 
+                        }
                     }
                 }
             }
@@ -180,7 +184,7 @@
             //Draw ennemies
             for (let index = 0 ; index < ennemies.length; index++) {
                 const ennemy = ennemies[index];
-                ennemy.style.top = (parseInt(ennemy.style.top)+2)+'px';
+                ennemy.style.top = (parseInt(ennemy.style.top)+vitesseEnnemy)+'px';
                 if (parseInt(ennemy.style.top) > window.innerHeight - ennemyHeight){
                     game.removeChild(ennemy);
                     ennemies.splice(index, 1)
